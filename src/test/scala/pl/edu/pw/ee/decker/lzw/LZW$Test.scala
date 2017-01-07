@@ -15,7 +15,7 @@ class LZW$Test extends FlatSpec {
 
   it should "compress" in {
     val decompressed: Array[Byte] = str2byte("abccd_ab")
-    val compressed: Array[Int] = Array[Int](1, 2, 3, 3, 4, 5, 6)
+    val compressed: Array[Int] = Array[Int](0,0,0, 1,0,0,0, 2,0,0,0,  3,0,0,0,  3,0,0,0,  4, 0,0,0, 5,0,0,0, 6)
       val dic = str2byte("abcd_") toList
     val out = new ByteArrayOutputStream()
     val in = new ByteArrayInputStream(decompressed)

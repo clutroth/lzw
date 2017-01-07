@@ -10,13 +10,13 @@ import pl.edu.pw.ee.decker.lzw.LZW
   */
 class SymmetricIT extends FlatSpec {
   def file = getClass.getResourceAsStream("/algorithm.txt")
-  val compressed = File.createTempFile("compressed-algorithm", ".txt")
-  val decompressed = File.createTempFile("decompressed-algorithm", ".txt")
+  val compressed = File.createTempFile("compressed-test", ".txt")
+  val decompressed = File.createTempFile("decompressed-test", ".txt")
   compress(file, compressed)
   decompress(compressed, decompressed)
   val decompressedInput = new FileInputStream(decompressed)
   val plain = file
-//  InputStreamEquals.isEqual(plain, decompressedInput)
+  InputStreamEquals.isEqual(plain, decompressedInput)
   decompressedInput close()
   plain close()
 

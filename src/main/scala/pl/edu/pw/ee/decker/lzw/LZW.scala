@@ -35,21 +35,16 @@ object LZW extends DictionaryCompression with Compression {
   def notEmpty(in: InputStream) = (in available) > 0
 
   override def decompress(in: InputStream, os: OutputStream, dictionary: List[Byte]) = {
-    val decopression = new MutableDecompression(LZWDictionary.createDecompression(dictionary))
+    val decompression = new MutableDecompression(LZWDictionary.createDecompression(dictionary))
     val buf = Array[Byte](0)
     val dataIn = new DataInputStream(in);
     def read =
-      decopression put (dataIn readInt)
+      decompression put (dataIn readInt)
     def write(data: List[Byte]) =
       os write (data toArray)
     while (notEmpty(dataIn)) {
-      //      System.out.println(dataIn readByte)
       write(read)
     }
-  }
-
-  def createDictionary(list: List[Byte]): Map[List[Byte], Int] = {
-    list map (List(_)) zip (Stream from 1) toMap
   }
 
   val CHARSET = StandardCharsets.UTF_8

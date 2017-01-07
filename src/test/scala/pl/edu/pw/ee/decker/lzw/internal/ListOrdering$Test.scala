@@ -10,18 +10,24 @@ class ListOrdering$Test extends FlatSpec {
 
   def compare(a: List[Byte], b: List[Byte]) = ListOrdering.compare(a, b)
 
-  def isBigger(a: List[Byte], b: List[Byte]) = compare(a, b) == -1
+  def assertBigger(a: List[Byte], b: List[Byte]) = assert(compare(a, b) > 0)
 
-  def isLesser(a: List[Byte], b: List[Byte]) = compare(a, b) == 1
+  def assertLesser(a: List[Byte], b: List[Byte]) = assert(compare(a, b) < 0)
 
   it should "find greater" in {
-    assert(isBigger(List(1), List(1, 1)))
+    assertBigger(List(1, 1), List(1))
   }
   it should "find lesser" in {
     assert(compare(List(1), List(1)) == 0)
   }
   it should "find equal lists" in {
-    assert(isLesser(List(1), List(0)))
+    assertLesser(List(0), List(1))
+  }
+  it should "pass negatives" in {
+    assertBigger(List(1), List(-1))
+  }
+  it should "first position matters" in {
+    assertLesser(List(-1, 10), List(10, 10))
   }
 
 }

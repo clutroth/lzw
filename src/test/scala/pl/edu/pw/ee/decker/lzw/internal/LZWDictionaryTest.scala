@@ -23,5 +23,10 @@ class LZWDictionaryTest extends FlatSpec {
     assert(expected == actual)
 
   }
+  it should "create Dictionary for bytes" in {
+    val dic = LZWDictionary.createCompression(((Byte MinValue) to (Byte MaxValue)) map (_ toByte) toList)
+    assert((List[Byte](Byte MinValue) -> 1) == (dic head))
+    assert((List[Byte](Byte MaxValue) -> 256) == (dic last))
+  }
 
 }
