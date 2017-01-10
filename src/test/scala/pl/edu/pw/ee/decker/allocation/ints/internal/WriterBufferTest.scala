@@ -25,22 +25,22 @@ class WriterBufferTest extends FlatSpec {
     }
 
   it should "write 1, 8 in 7 bits" in {
-    val wb = write(new WriterBuffer(3), List(1, 8))
+    val wb = write(new WriterBuffer(7), List(1, 8)) // 111 001 10000
     assert((wb buf) == 24L) // 0011000
     assert((wb usedBits) == 7)
 
   }
 
   it should "write two ones in 6 bits" in {
-    val wb = write(new WriterBuffer(3), List(1, 1))
+    val wb = write(new WriterBuffer(4), List(1, 1))
     assert((wb buf) == 9L) // 001001
     assert((wb usedBits) == 6)
   }
 
   it should "move first byte to fetch when using more than 8 bits" in {
-    val wb = write(new WriterBuffer(3), List(1, 8, 2)) //[00110000]010
-    assert(((wb fetch) deep) == (Array[Byte]((0x30) toByte) deep))
-    assert((wb usedBits) == 3)
+    val wb = write(new WriterBuffer(8), List(1, 4, 2)) //[00011000]0010
+    assert(((wb fetch) deep) == (Array[Byte]() deep))
+    assert((wb usedBits) == 4)
     assert((wb buf) == 2L)
   }
 
@@ -51,7 +51,7 @@ class WriterBufferTest extends FlatSpec {
     assert((fetch deep) == (Array[Byte](0xAB toByte, 0xCD toByte) deep))
   }
   it should "close and clean" in {
-    val wb = write(new WriterBuffer(3), List(1))
+    val wb = write(new WriterBuffer(4), List(1))
     //001
     val closed = WriterBuffer.close(wb)
     assert(closed.buf == 0L)
@@ -59,8 +59,9 @@ class WriterBufferTest extends FlatSpec {
     assert(closed.fetch.deep == Array[Byte](0x20).deep) //00100000
   }
   it should "increment used bits when range is fully used" in{
-    val wb = write(new WriterBuffer(3), List(7))
-    assert(wb.usedBits == 4)
+    val wb = write(new WriterBuffer(7), List(7))
+    assert(wb.usedBits == 3)
+    assert(wb.codeCounter == 8)
 
   }
 }
