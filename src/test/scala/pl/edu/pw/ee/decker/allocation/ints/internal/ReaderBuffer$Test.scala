@@ -32,7 +32,8 @@ class ReaderBuffer$Test extends FlatSpec {
   }
   it should "extend wordLength when necessary" in {
     val rb = new ReaderBuffer(codeCount = 0xF)
-    val actual = ReaderBuffer.read(rb, Array(0xAD toByte, 0x80 toByte))//[1010]|[1101|1][000|00][00]
+    val actual = ReaderBuffer.read(rb, Array(0xAD toByte, 0x80 toByte))
+    //[1010]|[1101|1][000|00][00]
     val expected = new ReaderBuffer(buf = 0,
       codeCount = 18,
       fetch = List(0xA, 0x1B, 0),
@@ -74,6 +75,21 @@ class ReaderBuffer$Test extends FlatSpec {
 
     def assertBufSize(wordLength: Int, expectedSize: Int) =
       assert(expectedSize == ReaderBuffer.newBufSize(wordLength))
+  }
+  it should "return Int on readInt for not empty fetch" in {
+    val rb = new ReaderBuffer(buf = 0,
+      codeCount = 0,
+      fetch = List(2),
+      usedBits = 0,
+      nextBuf = new Array(0))
+    val actual = ReaderBuffer.readInt(rb)
+    assert((Some(2),new ReaderBuffer(0)) == actual)
+  }
+
+  it should "return None on readInt for empty fetch" in {
+    val rb = new ReaderBuffer(0)
+    val actual = ReaderBuffer.readInt(rb)
+    assert((None, rb) == actual)
   }
 
 }

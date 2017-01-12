@@ -19,6 +19,10 @@ class ReaderBuffer(val buf: Long,
       usedBits = 0,
       nextBuf = Array())
 
+  def read(data: Array[Byte]): (Option[Int], ReaderBuffer) = {
+    ReaderBuffer.readInt(this)
+  }
+
   def canEqual(other: Any): Boolean = other.isInstanceOf[ReaderBuffer]
 
   override def equals(other: Any): Boolean = other match {
@@ -77,6 +81,18 @@ object ReaderBuffer {
 
   def newBufSize(wordLength: Int): Int = {
     Math.max(Math.ceil((wordLength toDouble) / BASE) toInt, 1)
+  }
+
+  def readInt(rb: ReaderBuffer): (Option[Int], ReaderBuffer) = {
+    return if (rb.fetch isEmpty) {
+      (None, rb)
+    } else {
+      (rb.fetch headOption, new ReaderBuffer(buf = rb.buf,
+        codeCount = rb.codeCount,
+        fetch = rb.fetch tail,
+        usedBits = rb.usedBits,
+        nextBuf = rb.nextBuf))
+    }
   }
 
   val BASE = BufUtils.BYTE_SIZE_IN_BITS
