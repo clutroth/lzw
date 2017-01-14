@@ -27,6 +27,12 @@ class LZWDictionaryTest extends FlatSpec {
     val dic = LZWDictionary.createCompression(((Byte MinValue) to (Byte MaxValue)) map (_ toByte) toList)
     assert((List[Byte](Byte MinValue) -> 1) == (dic head))
     assert((List[Byte](Byte MaxValue) -> 256) == (dic last))
+    assert(dic(List('A' toByte)) == 194)
+    assert(dic(List('a' toByte)) == 226)
+    assert(dic(List('0' toByte)) == 177)
+    assert(dic(List('B' toByte)) == 195)
+    assert(dic(List('b' toByte)) == 227)
+    assert(dic(List('1' toByte)) == 178)
   }
 
 }

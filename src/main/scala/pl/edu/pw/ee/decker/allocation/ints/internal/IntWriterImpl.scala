@@ -2,6 +2,7 @@ package pl.edu.pw.ee.decker.allocation.ints.internal
 
 import java.io.OutputStream
 
+import com.typesafe.scalalogging.Logger
 import pl.edu.pw.ee.decker.allocation.ints.IntWriter
 
 
@@ -12,6 +13,8 @@ class IntWriterImpl private(val out: OutputStream,
                             var buf: WriterBuffer) extends IntWriter with AutoCloseable {
   def this(out: OutputStream, startFrom: Int) =
     this(out, new WriterBuffer(startFrom))
+
+  val log = Logger(getClass)
 
   override def write(n: Int): Unit = {
     buf = buf.write(n)

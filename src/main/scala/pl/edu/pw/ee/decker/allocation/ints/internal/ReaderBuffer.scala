@@ -1,5 +1,7 @@
 package pl.edu.pw.ee.decker.allocation.ints.internal
 
+import java.lang.Math
+
 import pl.edu.pw.ee.decker.allocation.ints.internal.ReaderBuffer._
 
 import scala.annotation.tailrec
@@ -17,10 +19,14 @@ class ReaderBuffer(val buf: Long,
       codeCount = codeCount,
       fetch = List(),
       usedBits = 0,
-      nextBuf = Array())
+      nextBuf = new Array(newBufSize(getWordLength(codeCount))+1))
 
-  def read(data: Array[Byte]): (Option[Int], ReaderBuffer) = {
-    ReaderBuffer.readInt(this)
+  def read(read: () => Array[Byte]): (Option[Int], ReaderBuffer) = {
+    if (fetch isEmpty) {
+      ReaderBuffer.readInt(ReaderBuffer.read(this, read()))
+    } else {
+      ReaderBuffer.readInt(this)
+    }
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[ReaderBuffer]
@@ -52,15 +58,17 @@ object ReaderBuffer {
     sb append (')') toString()
   }
 
+  def getWordLength(codeCount: Int): Int = BufUtils.requiredBits(codeCount)
+
   @tailrec
   def read(rb: ReaderBuffer, data: Array[Byte]): ReaderBuffer = {
-    val wordLength: Int = BufUtils.requiredBits(rb.codeCount)
+    val wordLength: Int = getWordLength(rb.codeCount)
     if ((data isEmpty) && (rb.usedBits < wordLength))
       return rb
 
     @tailrec
     def loadBuf(usedBits: Int, data: Array[Byte], buf: Long): (Long, Array[Byte], Int) = {
-      if (usedBits >= wordLength)
+      if (usedBits >= wordLength || data.isEmpty)
         return (buf, data, usedBits)
       val loadedBuf = (buf << BASE) | ((data head) & 0xFF)
       loadBuf(usedBits + BASE, data tail, loadedBuf)

@@ -14,9 +14,17 @@ class IntReaderImpl(val in: InputStream,
     this(in, new ReaderBuffer(startFrom))
 
   override def read: Option[Int] = {
-    val res:(Option[Int], ReaderBuffer) = readBuf.read(readBuf.nextBuf)
+    def read() = {
+      in.read(readBuf.nextBuf)
+      readBuf.nextBuf;
+    }
+
+    val res: (Option[Int], ReaderBuffer) = readBuf.read(read)
     readBuf = res._2
-    res._1
+    res._1 match {
+      case Some(0) => None
+      case _ => res._1
+    }
   }
 
   override def close(): Unit =
