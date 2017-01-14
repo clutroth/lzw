@@ -17,10 +17,18 @@ class ReaderBuffer(val buf: Long,
       codeCount = codeCount,
       fetch = List(),
       usedBits = 0,
-      nextBuf = Array())
+      nextBuf = Array(ReaderBuffer.newBufSize(BufUtils.requiredBits(codeCount)) toByte))
 
-  def read(data: Array[Byte]): (Option[Int], ReaderBuffer) = {
-    ReaderBuffer.readInt(this)
+  def read(data: Array[Byte]): (Int, ReaderBuffer) = {
+    val rb = if (fetch.isEmpty) {
+      ReaderBuffer.read(this, nextBuf)
+    } else
+      this
+    (rb.fetch head, new ReaderBuffer(buf = rb.buf,
+      codeCount = rb.codeCount,
+      fetch = rb.fetch tail,
+      usedBits = rb.usedBits,
+      nextBuf = rb.nextBuf))
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[ReaderBuffer]
@@ -60,7 +68,7 @@ object ReaderBuffer {
 
     @tailrec
     def loadBuf(usedBits: Int, data: Array[Byte], buf: Long): (Long, Array[Byte], Int) = {
-      if (usedBits >= wordLength)
+      if (usedBits >= wordLength || data.isEmpty)
         return (buf, data, usedBits)
       val loadedBuf = (buf << BASE) | ((data head) & 0xFF)
       loadBuf(usedBits + BASE, data tail, loadedBuf)

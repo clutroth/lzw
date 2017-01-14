@@ -14,9 +14,14 @@ class IntReaderImpl(val in: InputStream,
     this(in, new ReaderBuffer(startFrom))
 
   override def read: Int = {
-    ???
+    val res = readBuf.read(readBuf.nextBuf)
+    readBuf=res._2
+    res._1
   }
 
   override def close(): Unit =
     in.close()
+
+  override def isEmpty: Boolean =
+    (in available) == 0 && (readBuf.fetch.isEmpty)
 }

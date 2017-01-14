@@ -5,4 +5,5 @@ package pl.edu.pw.ee.decker.allocation.ints
   */
 trait IntReader extends AutoCloseable{
   def read: Int
+  def isEmpty: Boolean
 }
