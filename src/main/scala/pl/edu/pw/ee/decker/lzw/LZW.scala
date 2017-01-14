@@ -3,7 +3,7 @@ package pl.edu.pw.ee.decker.lzw
 import java.io.{DataInputStream, DataOutputStream, InputStream, OutputStream}
 import java.nio.charset.StandardCharsets
 
-import pl.edu.pw.ee.decker.allocation.ints.internal.{IntReaderImpl, IntWriterImpl}
+import pl.edu.pw.ee.decker.allocation.ints.internal.{DummyIntReader, DummyIntWriter, IntReaderImpl, IntWriterImpl}
 import pl.edu.pw.ee.decker.lzw.internal.{LZWDictionary, MutableCompression, MutableDecompression}
 
 import scala.annotation.tailrec
@@ -17,7 +17,7 @@ object LZW extends DictionaryCompression with Compression {
   override def compress(in: InputStream, os: OutputStream, dictionary: List[Byte]) = {
     val compression = new MutableCompression(LZWDictionary.createCompression(dictionary))
     val buf = Array[Byte](0)
-    val out = new IntWriterImpl(os, dictionary.size)
+    val out = new DummyIntWriter(os, dictionary.size)
 
     def read: Option[Int] = {
       in read buf
@@ -41,7 +41,7 @@ object LZW extends DictionaryCompression with Compression {
 
   override def decompress(in: InputStream, os: OutputStream, dictionary: List[Byte]) = {
     val decompression = new MutableDecompression(LZWDictionary.createDecompression(dictionary))
-    val dataIn = new IntReaderImpl(in, dictionary.size);
+    val dataIn = new DummyIntReader(in, dictionary.size);
     @tailrec
     def decode(code: Option[Int]): Unit = {
       if (code isEmpty)
