@@ -27,10 +27,15 @@ class WriterBuffer(val buf: Long,
 
 object WriterBuffer {
   def close(wb: WriterBuffer): WriterBuffer = {
-    val fetch = wb.buf << (BufUtils.BYTE_SIZE_IN_BITS - wb.usedBits)
+    val fetchEl = wb.buf << (BufUtils.BYTE_SIZE_IN_BITS - wb.usedBits)
+    val fetch: Array[Byte] = if(fetchEl == 0){
+      Array(0 toByte)
+    }else{
+      Array(fetchEl toByte, 0 toByte)
+    }
     new WriterBuffer(buf = 0L,
       usedBits = 0,
-      fetch = Array(fetch toByte),
+      fetch = fetch,
       codeCounter = wb.codeCounter)
   }
 

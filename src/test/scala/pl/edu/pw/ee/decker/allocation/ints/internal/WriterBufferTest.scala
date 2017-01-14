@@ -56,12 +56,18 @@ class WriterBufferTest extends FlatSpec {
     val closed = WriterBuffer.close(wb)
     assert(closed.buf == 0L)
     assert(closed.usedBits == 0)
-    assert(closed.fetch.deep == Array[Byte](0x20).deep) //00100000
+    assert(closed.fetch.deep == Array[Byte](0x20, 0).deep) //00100000
   }
   it should "increment used bits when range is fully used" in{
     val wb = write(new WriterBuffer(7), List(7))
     assert(wb.usedBits == 3)
     assert(wb.codeCounter == 8)
+
+  }
+  it should "on close write 0 byte" in {
+    val wb = new WriterBuffer(4)
+    val closed = WriterBuffer.close(wb)
+    assert(closed.fetch.deep == Array(0 toByte).deep)
 
   }
 }

@@ -3,8 +3,10 @@ package pl.edu.pw.ee.decker.lzw
 import java.io.{DataInputStream, DataOutputStream, InputStream, OutputStream}
 import java.nio.charset.StandardCharsets
 
+import pl.edu.pw.ee.decker.allocation.ints.internal.{IntReaderImpl, IntWriterImpl}
 import pl.edu.pw.ee.decker.lzw.internal.{LZWDictionary, MutableCompression, MutableDecompression}
 
+import scala.annotation.tailrec
 import scala.collection.immutable.Seq
 import scala.collection.mutable
 
@@ -15,14 +17,17 @@ object LZW extends DictionaryCompression with Compression {
   override def compress(in: InputStream, os: OutputStream, dictionary: List[Byte]) = {
     val compression = new MutableCompression(LZWDictionary.createCompression(dictionary))
     val buf = Array[Byte](0)
-    val out = new DataOutputStream(os)
+    val out = new IntWriterImpl(os, dictionary.size)
+
     def read: Option[Int] = {
       in read buf
       compression put buf(0)
     }
+
     def write(res: Int): Unit = {
-      out writeInt  res
+      out write res
     }
+
     while (notEmpty(in)) {
       val res: Option[Int] = read
       if (res isDefined)
@@ -36,15 +41,19 @@ object LZW extends DictionaryCompression with Compression {
 
   override def decompress(in: InputStream, os: OutputStream, dictionary: List[Byte]) = {
     val decompression = new MutableDecompression(LZWDictionary.createDecompression(dictionary))
-    val buf = Array[Byte](0)
-    val dataIn = new DataInputStream(in);
-    def read =
-      decompression put (dataIn readInt)
-    def write(data: List[Byte]) =
-      os write (data toArray)
-    while (notEmpty(dataIn)) {
-      write(read)
+    val dataIn = new IntReaderImpl(in, dictionary.size);
+    @tailrec
+    def decode(code: Option[Int]): Unit = {
+      if (code isEmpty)
+        return
+      else {
+        val buf = decompression put (code get)
+        os.write(buf toArray)
+        decode(dataIn read)
+      }
     }
+
+    decode(dataIn read)
   }
 
   val CHARSET = StandardCharsets.UTF_8

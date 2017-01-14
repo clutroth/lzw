@@ -13,10 +13,13 @@ class IntReaderImpl(val in: InputStream,
   def this(in: InputStream, startFrom: Int) =
     this(in, new ReaderBuffer(startFrom))
 
-  override def read: Int = {
-    ???
+  override def read: Option[Int] = {
+    val res:(Option[Int], ReaderBuffer) = readBuf.read(readBuf.nextBuf)
+    readBuf = res._2
+    res._1
   }
 
   override def close(): Unit =
     in.close()
+
 }

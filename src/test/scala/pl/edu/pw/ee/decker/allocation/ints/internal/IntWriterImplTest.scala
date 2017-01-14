@@ -19,7 +19,7 @@ class IntWriterImplTest extends FlatSpec {
     writer.write(0x11) // 10001
     //[1010][1101][0100][0100]
     writer.close()
-    assert(((Array[Byte](0xAD toByte, 0x44 toByte)) deep) == ((out toByteArray) deep))
+    assert(((Array[Byte](0xAD toByte, 0x44 toByte, 0 toByte)) deep) == ((out toByteArray) deep))
   }
 
 }
