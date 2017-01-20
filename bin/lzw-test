@@ -1,0 +1,5 @@
+#!/bin/sh
+TEST_DIR='/tmp/lzw'
+mkdir $TEST_DIR 2> /dev/null
+./bin/lzw c $1 $TEST_DIR/compressed.dat > /dev/null 
+./bin/lzw d $TEST_DIR/compressed.dat $TEST_DIR/decompressed.dat > /dev/null

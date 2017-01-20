@@ -10,7 +10,7 @@ import scala.collection.mutable
   */
 class MutableCompression(val dictionary: mutable.TreeMap[List[Byte], Int]) {
   var lastString: List[Byte] = List()
-  Log.init(dictionary)
+//  Log.init(dictionary)
 
   object Log {
     val log = Logger[MutableCompression]
@@ -38,13 +38,13 @@ class MutableCompression(val dictionary: mutable.TreeMap[List[Byte], Int]) {
   def put(b: Byte): Option[Int] = {
     val currentString = lastString :+ b
     if (dictionary contains currentString) {
-      Log.knownWord(lastString, b, dictionary)
+//      Log.knownWord(lastString, b, dictionary)
       lastString = currentString
       None
     } else {
       val lastCode = dictionary(lastString)
       dictionary += currentString -> ((dictionary size) + 1)
-      Log.newWord(lastString, b, dictionary)(lastCode)
+//      Log.newWord(lastString, b, dictionary)(lastCode)
       lastString = List(b)
       Some(lastCode)
     }

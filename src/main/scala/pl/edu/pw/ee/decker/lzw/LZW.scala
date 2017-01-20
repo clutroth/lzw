@@ -33,7 +33,9 @@ object LZW extends DictionaryCompression with Compression {
       if (res isDefined)
         write(res get)
     }
-    write(read get)
+    val r = read
+    if (r isDefined)
+      write(r get)
     out close
   }
 

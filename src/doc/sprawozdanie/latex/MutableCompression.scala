@@ -1,0 +1,1 @@
+../../../main/scala/pl/edu/pw/ee/decker/lzw/internal/MutableCompression.scala

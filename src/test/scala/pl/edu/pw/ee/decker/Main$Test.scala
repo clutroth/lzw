@@ -10,9 +10,11 @@ import org.scalatest.FlatSpec
   * Created by clutroth on 1/14/17.
   */
 class Main$IT extends FlatSpec {
-  it should "compress ad decompress symetric" in {
+  it should "compress ad decompress Lena" in {
+    testLZW(LENA)
+  }
+  it should "compress ad decompress algorithm" in {
     testLZW(ALGORITHM)
-
   }
 
   private def testLZW (file:String) = {
@@ -25,6 +27,7 @@ class Main$IT extends FlatSpec {
   val COMPRESSED = s"$TEMP_DIR/compressed.dat"
   val DECOMPRESSED = s"$TEMP_DIR/decompressed.dat"
   val ALGORITHM = resource("/algorithm.txt")
+  val LENA = resource("/lena24.png")
 //  val LENA = resource("/lena8.png")
 
   def resource(name: String) =

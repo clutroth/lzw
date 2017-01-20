@@ -10,7 +10,8 @@ import scala.collection.mutable
   */
 class MutableDecompression(val dictionary: mutable.TreeMap[Int, List[Byte]]) {
   var previousCode: Option[Int] = None
-  Log.init(dictionary)
+
+  //Log.init(dictionary)
 
   object Log {
     val log = Logger[MutableDecompression]
@@ -43,7 +44,7 @@ class MutableDecompression(val dictionary: mutable.TreeMap[Int, List[Byte]]) {
     if (previousCode isEmpty) {
       previousCode = Some(code)
       val word = dictionary(code)
-      Log.firstCode(code, word)
+      //Log.firstCode(code, word)
       word
     } else {
       val lastWord = dictionary(previousCode get)
@@ -51,12 +52,12 @@ class MutableDecompression(val dictionary: mutable.TreeMap[Int, List[Byte]]) {
       if (dictionary contains code) {
         val word = dictionary(code)
         addWord(dictionary, lastWord :+ (word head))
-        Log.existing(code, word, dictionary)
+        //        Log.existing(code, word, dictionary)
         word
       } else {
         val word = lastWord :+ (lastWord head)
         addWord(dictionary, word)
-        Log.newOne(code, word, dictionary)
+        //        Log.newOne(code, word, dictionary)
         word
       }
     }
