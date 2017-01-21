@@ -77,8 +77,45 @@
 
   \end{section}
   \begin{section}{Prezentacja rezultatów}
+    \begin{table}[h]
+    \begin{tabular}{| l | l | l | l |}
+      \hline
+      Nazwa pliku		& rozmiar oryginalny	& rozmiar po kompresji& współczynnik kompresji	\\\hline
+      \hline
+      algorithm.txt		&	4043	&	3320	&	.82117	\\\hline
+      lena16.png		&	206871	&	322398	&	1.55844	\\\hline
+      lena24.png		&	131864	&	198330	&	1.50404	\\\hline
+      lena48.png		&	61866	&	91776	&	1.48346	\\\hline
+      lena64.png		&	42263	&	65394	&	1.54731	\\\hline
+      lena8.png			&	389740	&	608799	&	1.56206	\\\hline
+      lena.png			&	511937	&	796173	&	1.55521	\\\hline
+      pan-tadeusz.txt		&	493390	&	263472	&	.53400	\\\hline
+      pismo\_swiete.txt		&	5389056	&	2340807	&	.43436	\\\hline
+      short.txt			&	7	&	12	&	1.71428	\\\hline
+    \end{tabular}
+    \caption{Tabela wyników kompresji}
+    \end{table}
+    %\begin{figure}[h]
+    %  \includegraphics[width=\textwidth]{lena}
+    %  \caption{Lena}
+    %\end{figure}
+    Kompresję przeprowadzono na plikach tekstowych i graficznych. 
+    Implementacja generuje kody 32 bitowe, zapisując je w segmentach 8-bitowych, pomijając zapis
+    zbędnych segmentów zerowych. 
+    Algorytm okazał się najwydajniejszy dla dużych plików tekstowych.
+    Dla krótkiego tekstu \textit{algorithm.txt} zawierającego fragment opisu algorytmu z anglojęzycznej wikipedii
+    współczynnik kompresji wyniósł 82\%.
+    Tekst dłuższy - \textit{Pan Tadeusz} - Adama Mickiewicza po kompresji miał 53\% rozmiaru oryginalnego.
+    Kompresja Biblii, będącej najdłuższym tekstem dała współczynnik kompresji 43\%.
+
+    Implementacja została przetestowana pod kątem kompresji obrazów graficznych różnych rozmiarów.
+    Kompresja grafiki dawała współczynnik kompresji na stałem poziomie ok. 154 \%.
   \end{section}
   \begin{section}{Wnioski}
+    Kompresja daje największy zysk dla długich plików tekstowych. 
+    Kompresja obrazów przynosi skutek odwrotny do zamierzonego.
+    Przyczyną małej wydajności kompresji może być sposób alokacji bitów do zapisu kodu, 
+    operujący na blokach 8-bitowych zamiast na pojedynczych bitach.
   \end{section}
   \begin{section}{Załączniki}
   \appendix
